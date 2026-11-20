@@ -12,7 +12,7 @@ CurrentProfile := 1
 RecoilAmount := 4
 RecoilName := "AK-47"
 RecoilDelay := 20
-JumpDelay := 10
+JumpDelay := 20
 UseScreenShake := True
 UseHUD := True
 global Ativo := False
@@ -186,7 +186,7 @@ Send, {Space up}
 Return
 }
 Send, {Space down}
-Sleep, 10
+Sleep, 20
 Send, {Space up}
 Return
 
