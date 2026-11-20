@@ -12,7 +12,7 @@ CurrentProfile := 1
 RecoilAmount := 4
 RecoilName := "AK-47"
 RecoilDelay := 20
-JumpDelay := 20
+JumpDelay := 35
 UseScreenShake := True
 UseHUD := True
 global Ativo := False
@@ -67,6 +67,7 @@ GuiControl, HUD:, ProfileText, [%RecoilName%] Recoil: %RecoilAmount%
 ReleaseKeys() {
 global BhopActive
 BhopActive := False
+SetTimer, ApplyBhop, Off
 Send, {Space up}
 Send, {LButton up}
 Send, {RButton up}
@@ -172,9 +173,11 @@ SetTimer, ApplyBhop, %JumpDelay%
 Return
 
 $*Space Up::
+If (BhopActive) {
 BhopActive := False
 SetTimer, ApplyBhop, Off
 Send, {Space up}
+}
 Return
 #If
 
@@ -186,7 +189,6 @@ Send, {Space up}
 Return
 }
 Send, {Space down}
-Sleep, 20
 Send, {Space up}
 Return
 
