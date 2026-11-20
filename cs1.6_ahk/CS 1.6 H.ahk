@@ -65,6 +65,9 @@ GuiControl, HUD:Font, ProfileText
 GuiControl, HUD:, ProfileText, [%RecoilName%] Recoil: %RecoilAmount%
 }
 ReleaseKeys() {
+global BhopActive
+BhopActive := False
+SetTimer, ApplyBhop, Off
 Send, {Space up}
 Send, {LButton up}
 Send, {RButton up}
@@ -161,10 +164,13 @@ Return
 #If CanTrigger()
 $*Space::
 BhopActive := True
-SetTimer, ApplyBhop, 25
+SetTimer, ApplyBhop, %JumpDelay%
 Return
+#If
 
 $*Space Up::
+If (!BhopActive)
+Return
 BhopActive := False
 SetTimer, ApplyBhop, Off
 Send, {Space up}
@@ -177,12 +183,10 @@ SetTimer, ApplyBhop, Off
 Send, {Space up}
 Return
 }
-Send, {Space down}
-Sleep, 10
-Send, {Space up}
-Sleep, %JumpDelay%
+Send, {Space}
 Return
 
+#If CanTrigger()
 ~$*w::
 Return
 #If

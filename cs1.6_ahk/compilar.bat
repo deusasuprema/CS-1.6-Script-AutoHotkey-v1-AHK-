@@ -2,7 +2,7 @@
 setlocal
 
 set "AHK2EXE=C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe"
-set "BASE=C:\Program Files\AutoHotkey\Compiler\Compiler\AutoHotkeySC.bin"
+set "BASE=C:\Program Files\AutoHotkey\Compiler\AutoHotkeySC.bin"
 set "SCRIPT=%~dp0CS 1.6 H.ahk"
 set "OUTPUT=%~dp0CS 1.6 H.exe"
 set "ICON=%~dp0.extracted\.rsrc\ICON\8.ico"
@@ -14,7 +14,13 @@ if not exist "%AHK2EXE%" (
     exit /b 1
 )
 
-set "BASE=C:\Program Files\AutoHotkey\Compiler\AutoHotkeySC.bin"
+if not exist "%BASE%" (
+    echo AutoHotkeySC.bin nao encontrado em:
+    echo %BASE%
+    pause
+    exit /b 1
+)
+
 "%AHK2EXE%" /in "%SCRIPT%" /out "%OUTPUT%" /base "%BASE%" /icon "%ICON%"
 if errorlevel 1 (
     echo.
