@@ -168,19 +168,25 @@ Return
 #If CanTrigger()
 $*Space::
 BhopActive := True
-While (GetKeyState("Space", "P") && CanTrigger() && BhopActive) {
-Send, {Space down}
-Sleep, 10
-Send, {Space up}
-Sleep, %JumpDelay%
-}
+SetTimer, ApplyBhop, %JumpDelay%
+Return
+
+$*Space Up::
 BhopActive := False
+SetTimer, ApplyBhop, Off
 Send, {Space up}
 Return
 #If
 
-$*Space Up::
+ApplyBhop:
+If (!CanTrigger() || !BhopActive || !GetKeyState("Space", "P")) {
 BhopActive := False
+SetTimer, ApplyBhop, Off
+Send, {Space up}
+Return
+}
+Send, {Space down}
+Sleep, 10
 Send, {Space up}
 Return
 
