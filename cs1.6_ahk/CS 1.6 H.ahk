@@ -17,6 +17,7 @@ UseScreenShake := True
 UseHUD := True
 global Ativo := False
 global AimActive := False
+global BhopActive := False
 Gui, HUD:+LastFound +AlwaysOnTop -Caption +ToolWindow +E0x20
 Gui, HUD:Color, 181818
 Gui, HUD:Font, s9 bold, Segoe UI
@@ -159,14 +160,29 @@ DllCall("mouse_event", "UInt", 0x0001, "UInt", randX, "UInt", randY, "UInt", 0, 
 Return
 #If CanTrigger()
 $*Space::
-While GetKeyState("Space", "P") && CanTrigger() {
+BhopActive := True
+SetTimer, ApplyBhop, 25
+Return
+
+$*Space Up::
+BhopActive := False
+SetTimer, ApplyBhop, Off
+Send, {Space up}
+Return
+
+ApplyBhop:
+If (!CanTrigger() || !BhopActive || !GetKeyState("Space", "P")) {
+BhopActive := False
+SetTimer, ApplyBhop, Off
+Send, {Space up}
+Return
+}
 Send, {Space down}
 Sleep, 10
 Send, {Space up}
 Sleep, %JumpDelay%
-}
-Send, {Space up}
 Return
+
 ~$*w::
 Return
 #If
