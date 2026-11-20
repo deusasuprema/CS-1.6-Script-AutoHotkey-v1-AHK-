@@ -18,7 +18,6 @@ UseHUD := True
 global Ativo := False
 global AimActive := False
 global BhopActive := False
-global BhopSending := False
 Gui, HUD:+LastFound +AlwaysOnTop -Caption +ToolWindow +E0x20
 Gui, HUD:Color, 181818
 Gui, HUD:Font, s9 bold, Segoe UI
@@ -66,10 +65,8 @@ GuiControl, HUD:Font, ProfileText
 GuiControl, HUD:, ProfileText, [%RecoilName%] Recoil: %RecoilAmount%
 }
 ReleaseKeys() {
-global BhopActive, BhopSending
+global BhopActive
 BhopActive := False
-BhopSending := False
-SetTimer, ApplyBhop, Off
 Send, {Space up}
 Send, {LButton up}
 Send, {RButton up}
@@ -131,6 +128,11 @@ SoundBeep, 600, 100
 TrayTip, HUD, HUD OCULTO, 1, 16
 }
 Return
+F11::
+BhopActive := False
+ReleaseKeys()
+SoundBeep, 500, 100
+Return
 F12::
 SoundBeep, 750, 300
 ExitApp
@@ -166,33 +168,20 @@ Return
 #If CanTrigger()
 $*Space::
 BhopActive := True
-BhopSending := False
-SetTimer, ApplyBhop, %JumpDelay%
+While (GetKeyState("Space", "P") && CanTrigger() && BhopActive) {
+Send, {Space down}
+Sleep, 10
+Send, {Space up}
+Sleep, %JumpDelay%
+}
+BhopActive := False
+Send, {Space up}
 Return
 #If
 
 $*Space Up::
-If (BhopSending)
-Return
-If (BhopActive) {
 BhopActive := False
-SetTimer, ApplyBhop, Off
 Send, {Space up}
-}
-Return
-
-ApplyBhop:
-If (!CanTrigger() || !BhopActive || !GetKeyState("Space", "P")) {
-BhopActive := False
-BhopSending := False
-SetTimer, ApplyBhop, Off
-Send, {Space up}
-Return
-}
-BhopSending := True
-Send, {Space down}
-Send, {Space up}
-BhopSending := False
 Return
 
 #If CanTrigger()
