@@ -1,8 +1,8 @@
 # CS 1.6 Script - AutoHotkey v1
 
 Script em AutoHotkey v1 para auxiliar em controles do Counter-Strike 1.6 no Windows.
-Ele disponibiliza perfis de recoil, um HUD simples, bunny hop automatico e uma tecla
-para ativar ou desativar todas as funcoes.
+Ele disponibiliza perfis de recoil, um HUD simples e uma tecla para ativar ou
+desativar todas as funcoes.
 
 > [!WARNING]
 > Scripts e macros podem violar as regras de servidores.
@@ -15,8 +15,6 @@ para ativar ou desativar todas as funcoes.
 - Perfis de recoil para diferentes tipos de arma
 - Movimento automatico do mouse enquanto o botao esquerdo esta pressionado
 - HUD sempre visivel na tela para mostrar o estado e o perfil ativo
-- Bunny hop automatico enquanto `Space` esta pressionado
-- Encerramento do bhop ao soltar `Space` ou desativar o script
 - Encerramento rapido com `F12`
 - Compativel com os executaveis `hl.exe`, `cstrike.exe` e `cs.exe`
 
@@ -29,7 +27,6 @@ para ativar ou desativar todas as funcoes.
 | `End` | Mostra ou oculta o HUD |
 | `F12` | Fecha o script |
 | `Botao esquerdo` | Aplica o recoil do perfil ativo enquanto segurado |
-| `Space` | Executa bunny hop enquanto segurado; para ao soltar a tecla |
 
 ## Perfis
 
@@ -40,13 +37,8 @@ para ativar ou desativar todas as funcoes.
 | SMG | 2 |
 | Pistola | 1 |
 
-O script aceita o gatilho somente quando o jogo esta ativo. Quando o cursor esta
-com o formato de seta ou texto, a execucao do recoil e interrompida.
-
-O bhop usa um timer que envia `Space down` e `Space up` enquanto a barra de espaco
-esta fisicamente pressionada. O timer e interrompido ao soltar `Space`, desativar o
-script ou sair da janela suportada do jogo. Essa implementacao evita que os pulos
-continuem depois da tecla ser liberada.
+O script aceita os gatilhos somente quando o jogo esta ativo. Quando o cursor esta
+com o formato de seta ou texto, a execucao e interrompida.
 
 ## Executando
 
@@ -118,14 +110,12 @@ No inicio de `CS 1.6 H.ahk` e possivel alterar:
 RecoilAmount := 4
 RecoilName := "AK-47"
 RecoilDelay := 20
-JumpDelay := 10
 UseScreenShake := True
 UseHUD := True
 ```
 
 - `RecoilAmount`: distancia vertical aplicada pelo recoil
 - `RecoilDelay`: intervalo entre movimentos, em milissegundos
-- `JumpDelay`: intervalo entre os pulos, em milissegundos
 - `UseScreenShake`: ativa ou desativa pequenas variacoes aleatorias
 - `UseHUD`: define se o HUD inicia visivel
 
@@ -138,8 +128,6 @@ UseHUD := True
 - **A compilacao falha:** confirme os caminhos de `Ahk2Exe.exe` e
   `AutoHotkeySC.bin` em `compilar.bat`.
 - **O HUD nao aparece:** pressione `End` para mostrar o HUD novamente.
-- **O bhop continua depois de soltar a barra de espaco:** confirme que esta usando a
-  versao atual do executavel; o script deve interromper o timer na liberacao da tecla.
 
 ## Licenca
 

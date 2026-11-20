@@ -12,12 +12,10 @@ CurrentProfile := 1
 RecoilAmount := 4
 RecoilName := "AK-47"
 RecoilDelay := 20
-JumpDelay := 35
 UseScreenShake := True
 UseHUD := True
 global Ativo := False
 global AimActive := False
-global BhopActive := False
 Gui, HUD:+LastFound +AlwaysOnTop -Caption +ToolWindow +E0x20
 Gui, HUD:Color, 181818
 Gui, HUD:Font, s9 bold, Segoe UI
@@ -65,10 +63,6 @@ GuiControl, HUD:Font, ProfileText
 GuiControl, HUD:, ProfileText, [%RecoilName%] Recoil: %RecoilAmount%
 }
 ReleaseKeys() {
-global BhopActive
-BhopActive := False
-SetTimer, ApplyBhop, Off
-Send, {Space up}
 Send, {LButton up}
 Send, {RButton up}
 Send, {w up}
@@ -129,11 +123,6 @@ SoundBeep, 600, 100
 TrayTip, HUD, HUD OCULTO, 1, 16
 }
 Return
-F11::
-BhopActive := False
-ReleaseKeys()
-SoundBeep, 500, 100
-Return
 F12::
 SoundBeep, 750, 300
 ExitApp
@@ -166,32 +155,6 @@ Random, randY, -1, 1
 DllCall("mouse_event", "UInt", 0x0001, "UInt", randX, "UInt", randY, "UInt", 0, "UInt", 0)
 }
 Return
-#If CanTrigger()
-$*Space::
-BhopActive := True
-SetTimer, ApplyBhop, %JumpDelay%
-Return
-
-$*Space Up::
-If (BhopActive) {
-BhopActive := False
-SetTimer, ApplyBhop, Off
-Send, {Space up}
-}
-Return
-#If
-
-ApplyBhop:
-If (!CanTrigger() || !BhopActive || !GetKeyState("Space", "P")) {
-BhopActive := False
-SetTimer, ApplyBhop, Off
-Send, {Space up}
-Return
-}
-Send, {Space down}
-Send, {Space up}
-Return
-
 #If CanTrigger()
 ~$*w::
 Return
