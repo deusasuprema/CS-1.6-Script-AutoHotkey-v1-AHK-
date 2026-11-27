@@ -1,17 +1,37 @@
-# CS 1.6 Script - AutoHotkey v1
+# CS 1.6 Script - AutoHotkey v1 / C++ (Win32)
 
-Script em AutoHotkey v1 para auxiliar em controles do Counter-Strike 1.6 no Windows.
-Ele disponibiliza perfis com compensação simulada de recoil/spread por movimento do mouse,
-bunny hop, um HUD simples e teclas para ativar ou desativar as funcoes.
+Este repositório contém:
+- a versão original em **AutoHotkey v1** (`cs1.6_ahk/`)
+- uma versão portada para **C++ (Win32)** (`cs1.6_cpp/`) com foco em **temporização mais precisa** (ms) e execução **leve em segundo plano**
 
 > [!WARNING]
 > Scripts e macros podem violar as regras de servidores.
 > Use somente em partidas em servidores autorizados ou em um ambiente
 > controlado. O uso em servidores multiplayer pode resultar em punicoes.
 
-## Recursos
+## Versão C++ (Win32) — recomendada para precisão de tempo
 
-- Ativacao global com a tecla `Insert` (inclui bhop e compensacao simulada)
+A versão em C++ reimplementa o sistema com APIs nativas do Windows e um **mod menu** (estilo preto/vermelho):
+- `Insert` abre/fecha o menu; as funções são ativadas marcando as caixas (NR/NS, Bhop, HUD, Screen Shake) e o perfil é selecionado no menu
+- `F12` fecha o programa
+- `timeBeginPeriod(1)` + loop com agendamento por deadline, thread prioritária/MMCSS e timers de alta resolução (quando disponíveis) para reduzir jitter
+- Entrada via `SendInput` e HUD overlay leve (always-on-top, click-through)
+- Salvamento em `%APPDATA%\cs16ahk\settings.ini` (inclui estados das opções do menu)
+
+Código e instruções de compilação: [cs1.6_cpp/README.md](cs1.6_cpp/README.md)
+
+> "Milissegundos exatos" dependem do agendador do Windows; a versão C++ melhora a consistência em relação ao script, mas não é tempo real rígido.
+> O Windows padrão não é um sistema de tempo real rígido: preempções do agendador, interrupções e drivers podem impedir garantias determinísticas. A versão C++ busca o melhor comportamento possível em user-mode (baixa latência / "soft real-time"), mas não garante tempo real rígido.
+
+## Script em AutoHotkey v1
+
+Script em AutoHotkey v1 para auxiliar em controles do Counter-Strike 1.6 no Windows.
+Ele disponibiliza perfis com compensação simulada de recoil/spread por movimento do mouse,
+bunny hop, um HUD simples e teclas para ativar ou desativar as funcoes.
+
+## Recursos (AHK / C++)
+
+- Ativacao global com a tecla `Insert` (inclui bhop e compensacao NR/NS)
 - Perfis de arma com padrão de movimento do mouse (compensação simulada de recoil/spread)
 - Bunny hop (bhop) ao segurar `Espaco` quando o script estiver ativo
 - Movimento automatico do mouse enquanto o botao esquerdo esta pressionado
@@ -20,16 +40,26 @@ bunny hop, um HUD simples e teclas para ativar ou desativar as funcoes.
 - Encerramento rapido com `F12`
 - Compativel com os executaveis `hl.exe`, `cstrike.exe` e `cs.exe`
 
-## Controles
+## Controles (AHK v1)
 
 | Tecla | Funcao |
 |---|---|
-| `Insert` | Ativa ou desativa o script (compensacao simulada e bhop) |
+| `Insert` | Ativa ou desativa o sistema (compensacao NR/NS e bhop) |
 | `Home` | Alterna entre os perfis de arma |
 | `End` | Mostra ou oculta o HUD |
-| `F12` | Fecha o script |
+| `F12` | Fecha o programa |
 | `Botao esquerdo` | Aplica o padrão de compensação do perfil ativo enquanto segurado |
-| `Espaco` | Executa o bunny hop enquanto segurado (quando o script esta ativo) |
+| `Espaco` | Executa o bunny hop enquanto segurado (quando ativo) |
+
+## Controles (C++ mod menu)
+
+| Tecla / Ação | Função |
+|---|---|
+| `Insert` | Abre/fecha o mod menu |
+| `F12` | Fecha o programa |
+| Mouse (no menu) | Marcar/desmarcar opções e trocar perfil |
+| `Botao esquerdo` | Aplica NR/NS quando ativado no menu |
+| `Espaco` | Executa o bunny hop quando ativado no menu |
 
 ## Perfis
 
@@ -42,10 +72,10 @@ bunny hop, um HUD simples e teclas para ativar ou desativar as funcoes.
 
 A compensação é uma **simulação por movimento do mouse** (aproximação de no-recoil/no-spread) e não remove o recoil/spread real do jogo.
 
-O script aceita os gatilhos somente quando o jogo esta ativo. Quando o cursor esta
+O sistema aceita os gatilhos somente quando o jogo esta ativo. Quando o cursor esta
 com o formato de seta ou texto, a execucao e interrompida.
 
-## Executando
+## Executando (AHK)
 
 ### Executavel
 
@@ -55,7 +85,7 @@ Abra o arquivo:
 cs1.6_ahk/CS 1.6 H.exe
 ```
 
-Inicie o Counter-Strike 1.6 e pressione `Insert` para ativar o script.
+Inicie o Counter-Strike 1.6 e pressione `Insert` para ativar.
 
 ### Codigo-fonte
 
@@ -72,7 +102,7 @@ cs1.6_ahk/CS 1.6 H.ahk
 
 A versao de compilacao usada no codigo-fonte declara AutoHotkey 1.1.37.02.
 
-## Compilacao
+## Compilacao (AHK)
 
 O arquivo `compilar.bat` usa o compilador oficial do AutoHotkey:
 
@@ -94,20 +124,31 @@ compilar.bat
 Caso o compilador esteja instalado em outro local, ajuste as variaveis
 `AHK2EXE`, `BASE` e `ICON` no inicio de `compilar.bat`.
 
+## Compilacao (C++)
+
+Veja [cs1.6_cpp/README.md](cs1.6_cpp/README.md) para opções com CMake, MSVC (`build_msvc.bat`) e MinGW (`build_mingw.bat`).
+
 ## Estrutura
 
 ```text
 .
 ├── README.md
-└── cs1.6_ahk/
-    ├── CS 1.6 H.ahk       # Codigo-fonte do script
-    ├── CS 1.6 H.exe       # Executavel compilado
-    ├── compilar.bat       # Script de compilacao no Windows
-    └── .extracted/
-        └── .rsrc/ICON/    # Icones usados pelo projeto
+├── cs1.6_ahk/
+│   ├── CS 1.6 H.ahk       # Codigo-fonte AHK v1
+│   ├── CS 1.6 H.exe       # Executavel AHK compilado
+│   ├── compilar.bat       # Script de compilacao AHK no Windows
+│   └── .extracted/
+│       └── .rsrc/ICON/    # Icones usados pelo projeto
+└── cs1.6_cpp/
+    ├── README.md          # Instrucoes da versao C++
+    ├── CMakeLists.txt
+    ├── build_msvc.bat
+    ├── build_mingw.bat
+    └── src/
+        └── main.cpp       # Codigo-fonte C++ (Win32)
 ```
 
-## Personalizacao
+## Personalizacao (AHK)
 
 No inicio de `CS 1.6 H.ahk` e possivel alterar os valores padrao:
 
@@ -128,9 +169,11 @@ BhopDelay := 20
 
 Os padrões simulados de movimento do mouse por perfil podem ser ajustados na função `GetRecoilStep` em `cs1.6_ahk/CS 1.6 H.ahk`.
 
+Na versão C++, os padrões podem ser ajustados em `GetRecoilStep` em [cs1.6_cpp/src/main.cpp](cs1.6_cpp/src/main.cpp) e os valores persistidos em `%APPDATA%\cs16ahk\settings.ini`.
+
 ### Salvamento de configuracoes
 
-O script cria/carrega automaticamente o arquivo:
+O sistema cria/carrega automaticamente o arquivo:
 
 ```text
 %APPDATA%\cs16ahk\settings.ini
@@ -143,18 +186,18 @@ Configuracoes salvas:
 - Intervalo do padrao de compensacao (`RecoilDelay`)
 - Intervalo do bunny hop (`BhopDelay`)
 
-As configuracoes sao salvas ao alternar perfil/HUD e ao fechar o script.
+As configuracoes sao salvas ao alternar perfil/HUD e ao fechar.
 
 ## Solucao de problemas
 
-- **O script nao ativa no jogo:** confirme que o processo ativo e `hl.exe`,
+- **O sistema nao ativa no jogo:** confirme que o processo ativo e `hl.exe`,
   `cstrike.exe` ou `cs.exe`.
-- **As teclas nao funcionam:** execute o AutoHotkey ou o executavel como
-  administrador.
-- **A compensação não parece precisa:** isso é esperado em uma simulação por padrão; ajuste `RecoilDelay`, `UseScreenShake` ou os valores em `GetRecoilStep`.
-- **O bhop nao funciona:** ative o script com `Insert` e segure `Espaco` dentro do jogo.
-- **A compilacao falha:** confirme os caminhos de `Ahk2Exe.exe` e
+- **As teclas nao funcionam:** execute como administrador.
+- **A compensação não parece precisa:** isso é esperado em uma simulação por padrão; ajuste delays/shake ou os valores de `GetRecoilStep`.
+- **O bhop nao funciona:** ative com `Insert` e segure `Espaco` dentro do jogo.
+- **A compilacao AHK falha:** confirme os caminhos de `Ahk2Exe.exe` e
   `AutoHotkeySC.bin` em `compilar.bat`.
+- **A compilacao C++ falha:** instale MSVC Build Tools ou MinGW e use CMake/scripts em `cs1.6_cpp/`.
 - **O HUD nao aparece:** pressione `End` para mostrar o HUD novamente.
 
 ## Licenca

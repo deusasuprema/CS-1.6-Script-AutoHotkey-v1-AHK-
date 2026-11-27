@@ -1,0 +1,22 @@
+﻿i686-w64-mingw32-g++.exe : overlay_dll\main.cpp:1:9: warning: 'NOMINMAX' macro 
+redefined [-Wmacro-redefined]
+No linha:1 caractere:195
++ ... .6_cpp_gl"; & "$bin\i686-w64-mingw32-g++.exe" -std=c++17 -O2 -shared  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (overlay_dll\mai...acro-redefined] 
+   :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+    1 | #define NOMINMAX
+      |         ^
+<command line>:4:9: note: previous definition is here
+    4 | #define NOMINMAX 1
+      |         ^
+overlay_dll\main.cpp:2:9: warning: 'WIN32_LEAN_AND_MEAN' macro redefined 
+[-Wmacro-redefined]
+    2 | #define WIN32_LEAN_AND_MEAN
+      |         ^
+<command line>:5:9: note: previous definition is here
+    5 | #define WIN32_LEAN_AND_MEAN 1
+      |         ^
+2 warnings generated.
